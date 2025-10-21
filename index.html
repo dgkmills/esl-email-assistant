@@ -146,7 +146,7 @@
                     <h3 class="text-lg font-semibold mb-2" data-en="Subject Line" data-th="หัวข้อเรื่อง">Subject Line</h3>
                     <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-[var(--border-color)]">
                         <select id="subject-select" class="option-control w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
-                        <button id="copy-subject-button" class="copy-button inline-flex items-center rounded-md bg-slate-200 dark:bg-slate-600 px-4 py-2 text-xs font-medium hover:bg-slate-300 dark:hover:bg-slate-500">
+                        <button id="copy-subject-button" data-target="subject-select" class="copy-button inline-flex items-center rounded-md bg-slate-200 dark:bg-slate-600 px-4 py-2 text-xs font-medium hover:bg-slate-300 dark:hover:bg-slate-500">
                             <span data-en="Copy" data-th="คัดลอก">Copy</span>
                             <span class="copy-feedback ml-2 text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
                         </button>
@@ -165,19 +165,14 @@
     </div>
 
     <script>
-        // Store for API response and UI state
+        // --- State Management ---
         let state = {
             apiData: null,
-            language: 'en', // 'en' or 'th'
-            theme: 'light' // 'light' or 'dark'
+            language: 'en',
+            theme: 'light'
         };
 
-        // UI text translations
-        const uiText = {
-            // Add more static text keys here
-        };
-
-        // DOM Elements
+        // --- DOM Elements ---
         const generateButton = document.getElementById('generate-button');
         const loader = document.getElementById('loader');
         const placeholder = document.getElementById('placeholder');
@@ -191,27 +186,23 @@
         const generatePrompt = () => {
             const userInput = deconstructInput.value;
             const sender = document.getElementById('sender-name').value.trim() || '[Your Name]';
-            const recipient = document.getElementById('recipient-name').value.trim() || '[Recipient Name]';
+            const recipient = document.getElementById('recipient-name').value.trim();
             const targetLang = state.language === 'th' ? 'Thai' : 'English';
 
             return `You are an expert ESL assistant for Thai professionals. Analyze the user's draft. Create a comprehensive JSON object containing two distinct email options: one formal, one more standard/friendly.
-            IMPORTANT: The final generated email text for all parts (subject, greeting, etc.) must be in ${targetLang}.
-            For EACH of the two options, provide:
-            1.  An array of 3 unique 'subject_lines', each with an "en" text and a "th" explanation of its nuance.
-            2.  An array of 3 unique 'greetings' (using the placeholder "${recipient}"), each with "en" text and "th" explanation.
-            3.  An array of 3 unique 'opening_lines', each with "en" text and "th" explanation.
-            4.  An array of 3 unique 'main_bodies', each with "en" text and "th" explanation.
-            5.  An array of 3 unique 'closing_lines', each with "en" text and "th" explanation.
-            6.  An array of 3 unique 'sign_offs', each with "en" text and "th" explanation.
+            IMPORTANT: The value of the "text" field for all parts must be in ${targetLang}. The "th_explanation" field must always be in pure Thai script.
+
+            For EACH of the two options, provide arrays of 3 unique options for each of these keys: 'subject_lines', 'greetings', 'opening_lines', 'main_bodies', 'closing_lines', 'sign_offs'.
+            Each item in the array must be an object with a "text" field (in ${targetLang}) and a "th_explanation" field (always in Thai).
+            For greetings, use the placeholder "${recipient || '[Recipient Name]'}". For sign-offs, include the placeholder "${sender}".
 
             The final JSON structure MUST be: {"option1":{...}, "option2":{...}}. Do not include any text outside the JSON object.
-            User's draft: "${userInput}"
-            Signature placeholder to use: "${sender}"`;
+            User's draft: "${userInput}"`;
         };
-
+        
         const callApi = async () => {
             if (!deconstructInput.value.trim()) {
-                alert("Please provide your email ideas in the text box to begin.");
+                alert(state.language === 'en' ? "Please provide your email ideas in the text box to begin." : "กรุณาใส่แนวคิดอีเมลของคุณในกล่องข้อความเพื่อเริ่มต้น");
                 return;
             }
             loader.classList.remove('hidden');
@@ -227,7 +218,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt })
                 });
-                if (!response.ok) throw new Error(`API error! status: ${response.status}`);
+                if (!response.ok) {
+                     const errorText = await response.text();
+                    throw new Error(`API error! status: ${response.status} - ${errorText}`);
+                }
                 
                 const data = await response.json();
                 state.apiData = data;
@@ -235,7 +229,8 @@
 
             } catch (error) {
                 console.error("API call failed:", error);
-                placeholder.textContent = `Error: Could not generate email. ${error.message}`;
+                const errorMsg = state.language === 'en' ? `Error: Could not generate email. ${error.message}` : `เกิดข้อผิดพลาด: ไม่สามารถสร้างอีเมลได้ ${error.message}`;
+                placeholder.textContent = errorMsg;
                 placeholder.classList.remove('hidden');
             } finally {
                 loader.classList.add('hidden');
@@ -243,39 +238,34 @@
             }
         };
 
-        // --- UI Rendering ---
+        // --- UI Rendering & Updates ---
         const renderUI = () => {
             if (!state.apiData) return;
             
-            // Render Subject
             subjectSection.classList.remove('hidden');
             const subjectSelect = document.getElementById('subject-select');
-            // Combine subjects from both options, removing duplicates
-            const allSubjects = [...state.apiData.option1.subject_lines, ...state.apiData.option2.subject_lines];
-            const uniqueSubjects = Array.from(new Map(allSubjects.map(item => [item.en, item])).values());
+            const allSubjects = [...(state.apiData.option1.subject_lines || []), ...(state.apiData.option2.subject_lines || [])];
+            const uniqueSubjects = Array.from(new Map(allSubjects.map(item => [item.text, item])).values());
+            subjectSelect.innerHTML = uniqueSubjects.map(s => `<option value="${s.text}">${s.text}</option>`).join('');
             
-            subjectSelect.innerHTML = uniqueSubjects.map(s => `<option value="${s.en}">${s.en}</option>`).join('');
-            
-            // Render the two option boxes
             outputGrid.innerHTML = `
                 ${createOptionBoxHTML(1, 'Formal', 'เป็นทางการ')}
                 ${createOptionBoxHTML(2, 'Standard', 'มาตรฐาน')}
             `;
             
-            // Populate all controls and update text for the first time
             populateAllControls();
             updateAllExplanations();
             updateEmailText(1);
             updateEmailText(2);
 
-            // Re-attach event listeners to new elements
             attachEventListeners();
+            updateUIText(); // Ensure static text is correct after dynamic render
         };
 
         const createOptionBoxHTML = (num, titleEn, titleTh) => `
             <div id="output-box-${num}" class="output-box bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-[var(--border-color)] flex flex-col">
                 <div class="space-y-3 mb-4 p-3 bg-white dark:bg-slate-700 rounded-md border border-[var(--border-color)]">
-                    <h3 class="font-semibold" data-en="${titleEn} Option" data-th="ตัวเลือก${titleTh}">${titleEn} Option</h3>
+                    <h3 class="font-semibold" data-en="${titleEn} Option" data-th="ตัวเลือก${titleTh}"></h3>
                     ${createSelectHTML(num, 'greeting', 'Greeting', 'คำขึ้นต้น')}
                     ${createSelectHTML(num, 'opening_line', 'Opening', 'ประโยคเปิด')}
                     ${createSelectHTML(num, 'main_body', 'Main Request', 'เนื้อหาหลัก')}
@@ -285,7 +275,7 @@
                 <textarea id="output-${num}" class="w-full h-64 text-base bg-white dark:bg-slate-900/50 border border-[var(--border-color)] rounded-md resize-none focus:ring-1 focus:ring-sky-500 p-2" readonly></textarea>
                 <div class="mt-2 pt-2 flex items-center">
                     <button data-target="output-${num}" class="copy-button inline-flex items-center rounded-md bg-slate-200 dark:bg-slate-600 px-3 py-1.5 text-xs font-medium hover:bg-slate-300 dark:hover:bg-slate-500">
-                        <span data-en="Copy Body" data-th="คัดลอกเนื้อหา">Copy Body</span>
+                        <span data-en="Copy Body" data-th="คัดลอกเนื้อหา"></span>
                         <span class="copy-feedback ml-2 text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
                     </button>
                 </div>
@@ -293,31 +283,33 @@
         
         const createSelectHTML = (num, key, labelEn, labelTh) => `
             <div>
-                <label for="${key}-${num}" class="text-sm font-medium text-muted" data-en="${labelEn}" data-th="${labelTh}">${labelEn}</label>
+                <label for="${key}-${num}" class="text-sm font-medium text-muted" data-en="${labelEn}" data-th="${labelTh}"></label>
                 <select id="${key}-${num}" data-option-num="${num}" data-key="${key}" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
                 <p id="${key}-explanation-${num}" class="font-thai text-sm text-sky-700 dark:text-sky-400 mt-1 pl-1 h-5"></p>
             </div>`;
+        
+        const getApiKey = (key) => {
+            if (key === 'main_body') return 'main_bodies';
+            if (key === 'greeting') return 'greetings';
+            return `${key}s`;
+        };
 
         const populateAllControls = () => {
-            for (let i = 1; i <= 2; i++) {
-                const optionData = state.apiData[`option${i}`];
-                ['greeting', 'opening_line', 'main_body', 'closing_line', 'sign_off'].forEach(key => {
-                    const select = document.getElementById(`${key}s-${i}`); // Note: ID in HTML generation needs review
-                    if(select) select.innerHTML = optionData[`${key}s`].map(item => `<option value="${item.en}">${item.en}</option>`).join('');
-                });
-            }
              document.querySelectorAll('.option-control').forEach(select => {
+                if (!select.dataset.optionNum) return; // Skip subject
                 const optionNum = select.dataset.optionNum;
-                const key = select.dataset.key; // e.g., 'greeting'
-                const data = state.apiData[`option${optionNum}`][`${key}s`];
-                if (data) {
-                    select.innerHTML = data.map(item => `<option value="${item.en}">${item.en}</option>`).join('');
+                const key = select.dataset.key;
+                const apiKey = getApiKey(key);
+                const dataArray = state.apiData[`option${optionNum}`]?.[apiKey];
+                if (dataArray) {
+                    select.innerHTML = dataArray.map(item => `<option value="${item.text}">${item.text}</option>`).join('');
                 }
             });
         };
 
         const updateEmailText = (optionNum) => {
             const outputTextarea = document.getElementById(`output-${optionNum}`);
+            if(!outputTextarea) return;
             const parts = ['greeting', 'opening_line', 'main_body', 'closing_line', 'sign_off'].map(key => {
                 const select = document.getElementById(`${key}-${optionNum}`);
                 return select ? select.value : '';
@@ -326,32 +318,31 @@
         };
         
         const updateAllExplanations = () => {
-             document.querySelectorAll('.option-control').forEach(select => {
-                updateExplanationForSelect(select);
-            });
-            updateExplanationForSelect(document.getElementById('subject-select'), true);
+             document.querySelectorAll('.option-control').forEach(select => updateExplanationForSelect(select));
+             updateExplanationForSelect(document.getElementById('subject-select'), true);
         };
 
         const updateExplanationForSelect = (selectElement, isSubject = false) => {
-            if (!selectElement) return;
+            if (!selectElement || !state.apiData) return;
             const selectedValue = selectElement.value;
             let explanation = '';
             
             if (isSubject) {
-                const allSubjects = [...state.apiData.option1.subject_lines, ...state.apiData.option2.subject_lines];
-                const item = allSubjects.find(s => s.en === selectedValue);
-                if (item) explanation = item.th;
+                const allSubjects = [...(state.apiData.option1.subject_lines || []), ...(state.apiData.option2.subject_lines || [])];
+                const item = allSubjects.find(s => s.text === selectedValue);
+                if (item) explanation = item.th_explanation;
                 document.getElementById('subject-explanation').textContent = explanation;
             } else {
                 const optionNum = selectElement.dataset.optionNum;
                 const key = selectElement.dataset.key;
-                const dataArray = state.apiData[`option${optionNum}`][`${key}s`];
-                const item = dataArray.find(d => d.en === selectedValue);
-                if (item) explanation = item.th;
-                document.getElementById(`${key}-explanation-${optionNum}`).textContent = explanation;
+                const apiKey = getApiKey(key);
+                const dataArray = state.apiData[`option${optionNum}`]?.[apiKey];
+                const item = dataArray?.find(d => d.text === selectedValue);
+                if (item) explanation = item.th_explanation;
+                const explanationEl = document.getElementById(`${key}-explanation-${optionNum}`);
+                if (explanationEl) explanationEl.textContent = explanation;
             }
         };
-
 
         // --- Event Handlers ---
         const handleControlChange = (event) => {
@@ -364,7 +355,7 @@
         const copyToClipboard = (event) => {
             const button = event.currentTarget;
             const targetId = button.dataset.target;
-            const textToCopy = targetId ? document.getElementById(targetId).value : document.getElementById('subject-select').value;
+            const textToCopy = document.getElementById(targetId).value;
             const feedbackSpan = button.querySelector('.copy-feedback');
 
             navigator.clipboard.writeText(textToCopy).then(() => {
@@ -383,31 +374,25 @@
             state.language = state.language === 'en' ? 'th' : 'en';
             localStorage.setItem('language', state.language);
             updateUIText();
+            if(state.apiData) callApi();
         };
 
         const updateUIText = () => {
             document.querySelectorAll('[data-en]').forEach(el => {
-                el.textContent = el.dataset[state.language];
+                el.innerText = el.dataset[state.language] || el.dataset['en'];
             });
              document.querySelectorAll('[data-en-placeholder]').forEach(el => {
-                el.placeholder = el.getAttribute(`data-${state.language}-placeholder`);
+                el.placeholder = el.getAttribute(`data-${state.language}-placeholder`) || el.getAttribute('data-en-placeholder');
             });
-            // If API data exists, regenerate to get content in the new language
-            if(state.apiData) {
-                callApi();
-            }
         };
 
         const attachEventListeners = () => {
             document.querySelectorAll('.option-control').forEach(s => s.addEventListener('change', handleControlChange));
             document.querySelectorAll('.copy-button').forEach(b => b.addEventListener('click', copyToClipboard));
-            document.getElementById('subject-select').addEventListener('change', () => updateExplanationForSelect(document.getElementById('subject-select'), true));
-            document.getElementById('copy-subject-button').addEventListener('click', copyToClipboard);
         };
 
         // --- Initial Setup ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Load saved theme and language
             state.theme = localStorage.getItem('theme') || 'light';
             document.documentElement.className = state.theme;
             themeToggle.checked = state.theme === 'dark';
@@ -419,6 +404,8 @@
             generateButton.addEventListener('click', callApi);
             themeToggle.addEventListener('change', toggleTheme);
             langToggle.addEventListener('change', toggleLanguage);
+            document.getElementById('subject-select').addEventListener('change', () => updateExplanationForSelect(document.getElementById('subject-select'), true));
+
 
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
