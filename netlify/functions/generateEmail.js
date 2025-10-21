@@ -1,6 +1,5 @@
 const fetch = require('node-fetch');
 
-// CORS headers to allow requests from any origin, including your custom domain
 const headers = {
   'Access-Control-Allow-Origin': '*', 
   'Access-Control-Allow-Headers': 'Content-Type',
@@ -8,26 +7,16 @@ const headers = {
 };
 
 exports.handler = async (event) => {
-    // Handle preflight CORS request for browser compatibility
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 204,
-            headers,
-            body: ''
-        };
+        return { statusCode: 204, headers, body: '' };
     }
-
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, headers, body: 'Method Not Allowed' };
     }
 
     const API_KEY = process.env.GEMINI_KEY;
     if (!API_KEY) {
-        return {
-            statusCode: 500,
-            headers,
-            body: JSON.stringify({ error: 'API key is not configured.' })
-        };
+        return { statusCode: 500, headers, body: JSON.stringify({ error: 'API key not configured.' }) };
     }
 
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
@@ -36,15 +25,12 @@ exports.handler = async (event) => {
         const { prompt } = JSON.parse(event.body);
 
         const payload = {
-            contents: [{
-                parts: [{ text: prompt }]
-            }],
-             generationConfig: {
-                temperature: 0.7,
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+                temperature: 0.8,
                 topK: 1,
                 topP: 1,
-                maxOutputTokens: 2048,
-                // Request structured JSON output
+                maxOutputTokens: 8192,
                 responseMimeType: "application/json",
             },
         };
@@ -61,18 +47,18 @@ exports.handler = async (event) => {
             return {
                 statusCode: apiResponse.status,
                 headers,
-                body: JSON.stringify({ error: `Gemini API responded with status: ${apiResponse.status}` }),
+                body: JSON.stringify({ error: `Gemini API responded with status: ${apiResponse.status}, Body: ${errorBody}` }),
             };
         }
 
         const result = await apiResponse.json();
-        
         const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        
         if (!textResponse) {
-             throw new Error("No valid text response from API.");
+             console.error("Invalid API response structure:", JSON.stringify(result, null, 2));
+             throw new Error("No valid text response from API. The response structure might have changed.");
         }
 
-        // The API returns a JSON string in the text part, so we parse it.
         const parsedJson = JSON.parse(textResponse);
 
         return {
@@ -86,7 +72,7 @@ exports.handler = async (event) => {
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: 'An internal error occurred or the API returned an unexpected format.' }),
+            body: JSON.stringify({ error: 'An internal error occurred. This could be due to a malformed API response or a function timeout.' }),
         };
     }
 };
