@@ -8,11 +8,16 @@
     <meta name="theme-color" content="#ffffff"/>
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+        }
+        .font-thai {
+            font-family: 'Noto Sans Thai', sans-serif;
         }
         .tooltip {
             position: relative;
@@ -71,7 +76,7 @@
         <main class="max-w-7xl w-full mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-slate-200">
             <header class="text-center mb-8">
                 <h1 class="text-3xl md:text-4xl font-bold text-sky-700">ESL Email Assistant</h1>
-                <p class="mt-2 text-slate-600">A tool to help Kohsel employees write professional emails with confidence.</p>
+                <p class="mt-2 text-slate-600">เครื่องมือช่วยเขียนอีเมลภาษาอังกฤษสำหรับพนักงาน Kohsel</p>
             </header>
 
             <!-- Input Form -->
@@ -123,7 +128,10 @@
                 <div id="output-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Option 1 -->
                     <div id="output-box-1" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
-                        <h3 class="font-semibold mb-2 text-slate-700">Option 1</h3>
+                        <div class="mb-3">
+                            <p id="explanation-en-1" class="text-xs text-slate-600 font-semibold uppercase tracking-wider"></p>
+                            <p id="explanation-th-1" class="text-sm text-sky-800 font-medium font-thai"></p>
+                        </div>
                         <textarea id="output-1" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
                         <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
                             <button data-target="output-1" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
@@ -132,7 +140,10 @@
                     </div>
                     <!-- Option 2 -->
                     <div id="output-box-2" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
-                        <h3 class="font-semibold mb-2 text-slate-700">Option 2</h3>
+                         <div class="mb-3">
+                            <p id="explanation-en-2" class="text-xs text-slate-600 font-semibold uppercase tracking-wider"></p>
+                            <p id="explanation-th-2" class="text-sm text-sky-800 font-medium font-thai"></p>
+                        </div>
                         <textarea id="output-2" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
                         <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
                             <button data-target="output-2" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
@@ -148,16 +159,22 @@
     </div>
 
     <script>
+        // Ensure you have icon files in an /icons/ directory for the PWA manifest to work.
         const generateButton = document.getElementById('generate-button');
         const clearButton = document.getElementById('clear-button');
         const loader = document.getElementById('loader');
         const placeholder = document.getElementById('placeholder');
-        const outputGrid = document.getElementById('output-grid');
-
+        
         const outputBox1 = document.getElementById('output-box-1');
         const outputBox2 = document.getElementById('output-box-2');
         const output1 = document.getElementById('output-1');
         const output2 = document.getElementById('output-2');
+
+        const explanationEn1 = document.getElementById('explanation-en-1');
+        const explanationTh1 = document.getElementById('explanation-th-1');
+        const explanationEn2 = document.getElementById('explanation-en-2');
+        const explanationTh2 = document.getElementById('explanation-th-2');
+
 
         const getFormValues = () => ({
             tone: document.getElementById('tone').value,
@@ -169,18 +186,18 @@
 
         const generatePrompt = () => {
             const { tone, opening, purpose, closing, deconstruct } = getFormValues();
-
-            let basePrompt;
+            
+            let userInput;
             if (deconstruct.trim()) {
-                basePrompt = `You are a helpful assistant for non-native English speakers. Review the following email draft and rewrite it to be more professional, clear, and fluent in English. Adapt the email to have a ${tone} tone. The user's draft is: "${deconstruct}"`;
+                userInput = `The user's draft is: "${deconstruct}"`;
             } else {
                  if (!purpose.trim()) return null; // Require purpose for new emails
-                basePrompt = `You are a helpful assistant for non-native English speakers. Write a professional email with a ${tone} tone. The main purpose of the email is: "${purpose}".`;
-                if (opening) basePrompt += ` The opening should convey: "${opening}".`;
-                if (closing) basePrompt += ` The closing should include the idea: "${closing}".`;
+                userInput = `The main purpose of the email is: "${purpose}".`;
+                if (opening) userInput += ` The opening should convey: "${opening}".`;
+                if (closing) userInput += ` The closing should include the idea: "${closing}".`;
             }
             
-            return `${basePrompt} Please provide two distinct and complete email options in a valid JSON format like this: {"options": ["First email text...", "Second email text..."]}. Do not include any markdown or extra explanations outside of the JSON structure.`;
+            return `You are a helpful assistant for non-native English speakers, specifically Thai adults. Rewrite an email based on the user's input to have a ${tone} tone. Provide two distinct options: one more formal, and one more casual/friendly. For each option, provide a brief one-sentence explanation in both English and Thai. Respond in a valid JSON format only, like this: {"options": [{"email": "...", "explanation_en": "...", "explanation_th": "..."}, {"email": "...", "explanation_en": "...", "explanation_th": "..."}]}. The user input is: ${userInput}`;
         };
 
         const callApi = async () => {
@@ -211,8 +228,16 @@
                 const data = await response.json();
                 
                 if (data.options && data.options.length >= 2) {
-                    output1.value = data.options[0];
-                    output2.value = data.options[1];
+                    const [option1Data, option2Data] = data.options;
+                    
+                    output1.value = option1Data.email;
+                    explanationEn1.textContent = option1Data.explanation_en;
+                    explanationTh1.textContent = option1Data.explanation_th;
+
+                    output2.value = option2Data.email;
+                    explanationEn2.textContent = option2Data.explanation_en;
+                    explanationTh2.textContent = option2Data.explanation_th;
+
                     outputBox1.classList.remove('hidden');
                     outputBox1.classList.add('flex');
                     outputBox2.classList.remove('hidden');
@@ -260,6 +285,10 @@
             document.getElementById('deconstruct').value = '';
             output1.value = '';
             output2.value = '';
+            explanationEn1.textContent = '';
+            explanationTh1.textContent = '';
+            explanationEn2.textContent = '';
+            explanationTh2.textContent = '';
             outputBox1.classList.add('hidden');
             outputBox2.classList.add('hidden');
             placeholder.textContent = 'Your generated email options will appear here...';

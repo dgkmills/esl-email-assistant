@@ -1,21 +1,21 @@
 {
-  "short_name": "Email ESL",
   "name": "ESL Email Assistant",
-  "description": "An assistant for Kohsel employees to write professional emails.",
+  "short_name": "Email Assist",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0369a1",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
       "src": "/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "type": "image/png"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#0369a1",
-  "background_color": "#f8fafc"
+  ]
 }
+
