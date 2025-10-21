@@ -10,63 +10,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-        .font-thai {
-            font-family: 'Noto Sans Thai', sans-serif;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 220px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -110px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .font-thai { font-family: 'Noto Sans Thai', sans-serif; }
         .loader {
             border: 4px solid #f3f3f3;
             border-radius: 50%;
             border-top: 4px solid #3498db;
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .output-box {
-            transition: all 0.3s ease-in-out;
+        .output-box { transition: all 0.3s ease-in-out; }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
     </style>
 </head>
@@ -76,76 +45,80 @@
         <main class="max-w-7xl w-full mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-slate-200">
             <header class="text-center mb-8">
                 <h1 class="text-3xl md:text-4xl font-bold text-sky-700">ESL Email Assistant</h1>
-                <p class="mt-2 text-slate-600">เครื่องมือช่วยเขียนอีเมลภาษาอังกฤษสำหรับพนักงาน Kohsel</p>
+                <p class="mt-2 text-slate-600 font-thai text-lg">เครื่องมือช่วยปรับปรุงและเขียนอีเมลภาษาอังกฤษ</p>
             </header>
 
             <!-- Input Form -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div class="space-y-6">
-                    <div>
-                        <label for="tone" class="block text-sm font-medium text-slate-700 mb-1">Tone of Voice
-                            <div class="tooltip inline-block ml-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle text-slate-500" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/></svg>
-                                <span class="tooltiptext">"Formal" is for official company announcements. "Standard" is for daily work. "Friendly" is for teammates you know well.</span>
-                            </div>
-                        </label>
-                        <select id="tone" name="tone" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"><option>Standard</option><option>Formal</option><option>Friendly</option></select>
-                    </div>
-                    <div>
-                        <label for="opening" class="block text-sm font-medium text-slate-700">Opening</label>
-                        <input type="text" id="opening" placeholder="e.g., Hope you are well, Quick question..." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label for="purpose" class="block text-sm font-medium text-slate-700">Purpose / Main Point</label>
-                        <textarea id="purpose" rows="3" placeholder="e.g., Need final report for Q3 project by EOD" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
-                    </div>
-                     <div>
-                        <label for="closing" class="block text-sm font-medium text-slate-700">Closing</label>
-                        <input type="text" id="closing" placeholder="e.g., Let me know if you have questions" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                    </div>
+            <div class="w-full space-y-4 mb-8">
+                 <div>
+                     <label for="deconstruct" class="block text-lg font-semibold text-slate-800 mb-2">Start with your email draft</label>
+                     <textarea id="deconstruct" rows="8" placeholder="Write your main ideas or paste a full draft here in English or Thai. The AI will help you improve it." class="w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-base"></textarea>
                 </div>
-                 <div class="space-y-6">
-                    <div>
-                         <label for="deconstruct" class="block text-sm font-medium text-slate-700">Or Paste an Existing Email to Improve</label>
-                         <textarea id="deconstruct" rows="8" placeholder="Paste your draft here and click 'Generate' to get improved versions based on the tone you select above." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <button id="generate-button" class="w-full inline-flex justify-center items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-                            Generate Email
-                        </button>
-                        <button id="clear-button" class="w-full inline-flex justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-                            Clear
-                        </button>
-                    </div>
-                 </div>
+                <div class="flex items-center space-x-4">
+                    <button id="generate-button" class="w-full inline-flex justify-center items-center rounded-md border border-transparent bg-sky-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                        Generate & Improve
+                    </button>
+                    <button id="clear-button" class="w-full inline-flex justify-center rounded-md border border-slate-300 bg-white px-6 py-3 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                        Clear
+                    </button>
+                </div>
             </div>
 
             <!-- Output Section -->
             <div id="output-container" class="relative">
                 <div id="loader" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-10 rounded-lg">
-                    <div class="loader"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-slate-600 font-medium">Generating options...</p>
+                    </div>
                 </div>
                 <div id="output-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Option 1 -->
                     <div id="output-box-1" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
-                        <div class="mb-3">
-                            <p id="explanation-en-1" class="text-xs text-slate-600 font-semibold uppercase tracking-wider"></p>
-                            <p id="explanation-th-1" class="text-sm text-sky-800 font-medium font-thai"></p>
+                        <!-- Customization Controls -->
+                        <div class="space-y-3 mb-4 p-3 bg-white rounded-md border">
+                           <h3 class="font-semibold text-slate-800">Customize Option 1</h3>
+                           <div>
+                                <label for="tone-1" class="text-sm font-medium text-slate-700">Tone</label>
+                                <select id="tone-1" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
+                           <div>
+                                <label for="opening-1" class="text-sm font-medium text-slate-700">Opening</label>
+                                <select id="opening-1" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
+                           <div>
+                                <label for="closing-1" class="text-sm font-medium text-slate-700">Closing</label>
+                                <select id="closing-1" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
                         </div>
-                        <textarea id="output-1" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
-                        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
+                        <!-- Email Output -->
+                        <textarea id="output-1" class="w-full h-56 text-base bg-white border border-slate-200 rounded-md resize-none focus:ring-1 focus:ring-sky-500 p-2"></textarea>
+                         <div class="mt-2 pt-2 flex items-center">
                             <button data-target="output-1" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
                             <span class="copy-feedback ml-3 text-xs text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
                         </div>
                     </div>
                     <!-- Option 2 -->
-                    <div id="output-box-2" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
-                         <div class="mb-3">
-                            <p id="explanation-en-2" class="text-xs text-slate-600 font-semibold uppercase tracking-wider"></p>
-                            <p id="explanation-th-2" class="text-sm text-sky-800 font-medium font-thai"></p>
+                     <div id="output-box-2" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
+                        <!-- Customization Controls -->
+                        <div class="space-y-3 mb-4 p-3 bg-white rounded-md border">
+                           <h3 class="font-semibold text-slate-800">Customize Option 2</h3>
+                            <div>
+                                <label for="tone-2" class="text-sm font-medium text-slate-700">Tone</label>
+                                <select id="tone-2" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
+                           <div>
+                                <label for="opening-2" class="text-sm font-medium text-slate-700">Opening</label>
+                                <select id="opening-2" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
+                           <div>
+                                <label for="closing-2" class="text-sm font-medium text-slate-700">Closing</label>
+                                <select id="closing-2" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm"></select>
+                           </div>
                         </div>
-                        <textarea id="output-2" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
-                        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
+                         <!-- Email Output -->
+                        <textarea id="output-2" class="w-full h-56 text-base bg-white border border-slate-200 rounded-md resize-none focus:ring-1 focus:ring-sky-500 p-2"></textarea>
+                         <div class="mt-2 pt-2 flex items-center">
                             <button data-target="output-2" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
                             <span class="copy-feedback ml-3 text-xs text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
                         </div>
@@ -159,7 +132,6 @@
     </div>
 
     <script>
-        // Ensure you have icon files in an /icons/ directory for the PWA manifest to work.
         const generateButton = document.getElementById('generate-button');
         const clearButton = document.getElementById('clear-button');
         const loader = document.getElementById('loader');
@@ -167,51 +139,48 @@
         
         const outputBox1 = document.getElementById('output-box-1');
         const outputBox2 = document.getElementById('output-box-2');
-        const output1 = document.getElementById('output-1');
-        const output2 = document.getElementById('output-2');
 
-        const explanationEn1 = document.getElementById('explanation-en-1');
-        const explanationTh1 = document.getElementById('explanation-th-1');
-        const explanationEn2 = document.getElementById('explanation-en-2');
-        const explanationTh2 = document.getElementById('explanation-th-2');
+        // Store for API response data to avoid re-fetching
+        let apiDataStore = {};
 
+        const generatePrompt = (userInput, toneOverrides = {}) => {
+            const tone1 = toneOverrides.tone1 || 'Formal';
+            const tone2 = toneOverrides.tone2 || 'Standard';
 
-        const getFormValues = () => ({
-            tone: document.getElementById('tone').value,
-            opening: document.getElementById('opening').value,
-            purpose: document.getElementById('purpose').value,
-            closing: document.getElementById('closing').value,
-            deconstruct: document.getElementById('deconstruct').value,
-        });
-
-        const generatePrompt = () => {
-            const { tone, opening, purpose, closing, deconstruct } = getFormValues();
+            return `You are a helpful assistant for non-native English speakers, specifically Thai adults. Analyze the user's email draft or ideas. Then, generate a comprehensive JSON object with two improved email options.
+            - Option 1 should have a ${tone1} tone.
+            - Option 2 should have a ${tone2} tone.
+            For EACH option, provide:
+            1. A 'main_body' text.
+            2. An array of 3 different 'opening_lines'.
+            3. An array of 3 different 'closing_lines'.
             
-            let userInput;
-            if (deconstruct.trim()) {
-                userInput = `The user's draft is: "${deconstruct}"`;
-            } else {
-                 if (!purpose.trim()) return null; // Require purpose for new emails
-                userInput = `The main purpose of the email is: "${purpose}".`;
-                if (opening) userInput += ` The opening should convey: "${opening}".`;
-                if (closing) userInput += ` The closing should include the idea: "${closing}".`;
-            }
+            Respond in a valid JSON format only, like this: 
+            {"option1": {"main_body": "...", "opening_lines": ["...", "...", "..."], "closing_lines": ["...", "...", "..."]}, "option2": {"main_body": "...", "opening_lines": ["...", "...", "..."], "closing_lines": ["...", "...", "..."]}}
             
-            return `You are a helpful assistant for non-native English speakers, specifically Thai adults. Rewrite an email based on the user's input to have a ${tone} tone. Provide two distinct options: one more formal, and one more casual/friendly. For each option, provide a brief one-sentence explanation in both English and Thai. Respond in a valid JSON format only, like this: {"options": [{"email": "...", "explanation_en": "...", "explanation_th": "..."}, {"email": "...", "explanation_en": "...", "explanation_th": "..."}]}. The user input is: ${userInput}`;
+            The user's input is: "${userInput}"`;
         };
 
-        const callApi = async () => {
-            const prompt = generatePrompt();
-            if (!prompt) {
-                alert("Please fill in the 'Purpose' field or paste a draft to improve.");
+        const callApi = async (isToneChange = false) => {
+            const userInput = document.getElementById('deconstruct').value;
+            if (!userInput.trim()) {
+                alert("Please provide your email ideas in the text box to begin.");
                 return;
             }
 
             loader.classList.remove('hidden');
             placeholder.classList.add('hidden');
-            outputBox1.classList.add('hidden');
-            outputBox2.classList.add('hidden');
+            if (!isToneChange) {
+                outputBox1.classList.add('hidden');
+                outputBox2.classList.add('hidden');
+            }
             generateButton.disabled = true;
+
+            const toneOverrides = isToneChange ? {
+                tone1: document.getElementById('tone-1').value,
+                tone2: document.getElementById('tone-2').value
+            } : {};
+            const prompt = generatePrompt(userInput, toneOverrides);
 
             try {
                 const response = await fetch('/.netlify/functions/generateEmail', {
@@ -226,25 +195,18 @@
                 }
 
                 const data = await response.json();
+                apiDataStore = data; // Save the full response
                 
-                if (data.options && data.options.length >= 2) {
-                    const [option1Data, option2Data] = data.options;
-                    
-                    output1.value = option1Data.email;
-                    explanationEn1.textContent = option1Data.explanation_en;
-                    explanationTh1.textContent = option1Data.explanation_th;
+                populateControls(1, data.option1, toneOverrides.tone1 || 'Formal');
+                populateControls(2, data.option2, toneOverrides.tone2 || 'Standard');
+                
+                updateEmailText(1);
+                updateEmailText(2);
 
-                    output2.value = option2Data.email;
-                    explanationEn2.textContent = option2Data.explanation_en;
-                    explanationTh2.textContent = option2Data.explanation_th;
-
-                    outputBox1.classList.remove('hidden');
-                    outputBox1.classList.add('flex');
-                    outputBox2.classList.remove('hidden');
-                    outputBox2.classList.add('flex');
-                } else {
-                    throw new Error("Received an invalid response format from the server.");
-                }
+                outputBox1.classList.remove('hidden');
+                outputBox1.classList.add('flex');
+                outputBox2.classList.remove('hidden');
+                outputBox2.classList.add('flex');
 
             } catch (error) {
                 console.error("API call failed:", error);
@@ -256,18 +218,52 @@
             }
         };
 
+        const populateControls = (optionNum, data, currentTone) => {
+            const tones = ['Formal', 'Standard', 'Friendly'];
+            const toneSelect = document.getElementById(`tone-${optionNum}`);
+            const openingSelect = document.getElementById(`opening-${optionNum}`);
+            const closingSelect = document.getElementById(`closing-${optionNum}`);
+
+            // Populate tones
+            toneSelect.innerHTML = tones.map(t => `<option value="${t}" ${t === currentTone ? 'selected' : ''}>${t}</option>`).join('');
+
+            // Populate openings
+            openingSelect.innerHTML = data.opening_lines.map(line => `<option value="${line}">${line}</option>`).join('');
+
+            // Populate closings
+            closingSelect.innerHTML = data.closing_lines.map(line => `<option value="${line}">${line}</option>`).join('');
+        };
+        
+        const updateEmailText = (optionNum) => {
+            const data = apiDataStore[`option${optionNum}`];
+            if (!data) return;
+
+            const opening = document.getElementById(`opening-${optionNum}`).value;
+            const closing = document.getElementById(`closing-${optionNum}`).value;
+            const outputTextarea = document.getElementById(`output-${optionNum}`);
+            
+            outputTextarea.value = `${opening}\n\n${data.main_body}\n\n${closing}`;
+        };
+
+        const handleControlChange = (event) => {
+            const targetId = event.target.id;
+            if (targetId.startsWith('tone-')) {
+                // It's a tone change, so we need a new API call
+                callApi(true);
+            } else {
+                // It's an opening or closing change, just update the text
+                const optionNum = targetId.split('-')[1];
+                updateEmailText(optionNum);
+            }
+        };
+        
         const copyToClipboard = (event) => {
             const button = event.target;
             const targetId = button.dataset.target;
             const textArea = document.getElementById(targetId);
             const feedbackSpan = button.nextElementSibling;
             
-            if (!textArea.value) return;
-
-            const tempTextArea = document.createElement("textarea");
-            tempTextArea.value = textArea.value;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
+            textArea.select();
             try {
                 document.execCommand('copy');
                 feedbackSpan.classList.remove('opacity-0');
@@ -275,20 +271,11 @@
             } catch (err) {
                 console.error('Fallback: Oops, unable to copy', err);
             }
-            document.body.removeChild(tempTextArea);
         };
 
         const clearAllFields = () => {
-            document.getElementById('opening').value = '';
-            document.getElementById('purpose').value = '';
-            document.getElementById('closing').value = '';
             document.getElementById('deconstruct').value = '';
-            output1.value = '';
-            output2.value = '';
-            explanationEn1.textContent = '';
-            explanationTh1.textContent = '';
-            explanationEn2.textContent = '';
-            explanationTh2.textContent = '';
+            apiDataStore = {};
             outputBox1.classList.add('hidden');
             outputBox2.classList.add('hidden');
             placeholder.textContent = 'Your generated email options will appear here...';
@@ -296,10 +283,14 @@
         };
 
         // --- Event Listeners ---
-        generateButton.addEventListener('click', callApi);
+        generateButton.addEventListener('click', () => callApi(false));
         clearButton.addEventListener('click', clearAllFields);
+        
         document.querySelectorAll('.copy-button').forEach(button => {
             button.addEventListener('click', copyToClipboard);
+        });
+        document.querySelectorAll('.option-control').forEach(select => {
+            select.addEventListener('change', handleControlChange);
         });
 
         if ('serviceWorker' in navigator) {
