@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Light gray background */
+            background-color: #f8fafc;
         }
         .tooltip {
             position: relative;
@@ -60,6 +60,9 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .output-box {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="antialiased text-slate-800">
@@ -71,39 +74,36 @@
                 <p class="mt-2 text-slate-600">A tool to help Kohsel employees write professional emails with confidence.</p>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Left Panel: Input Form -->
+            <!-- Input Form -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <div class="space-y-6">
                     <div>
                         <label for="tone" class="block text-sm font-medium text-slate-700 mb-1">Tone of Voice
                             <div class="tooltip inline-block ml-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle text-slate-500" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
-                                </svg>
-                                <span class="tooltiptext">"Formal" is for official company announcements. "Standard" is for daily work with colleagues. "Friendly" is for team members you know well.</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle text-slate-500" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/></svg>
+                                <span class="tooltiptext">"Formal" is for official company announcements. "Standard" is for daily work. "Friendly" is for teammates you know well.</span>
                             </div>
                         </label>
-                        <select id="tone" name="tone" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                            <option>Standard</option>
-                            <option>Formal</option>
-                            <option>Friendly</option>
-                        </select>
+                        <select id="tone" name="tone" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"><option>Standard</option><option>Formal</option><option>Friendly</option></select>
                     </div>
-
                     <div>
                         <label for="opening" class="block text-sm font-medium text-slate-700">Opening</label>
-                        <input type="text" id="opening" placeholder="e.g., Hope you are well, Quick question about..." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                        <input type="text" id="opening" placeholder="e.g., Hope you are well, Quick question..." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
                     </div>
                     <div>
                         <label for="purpose" class="block text-sm font-medium text-slate-700">Purpose / Main Point</label>
-                        <textarea id="purpose" rows="3" placeholder="e.g., Need the final report for the Q3 project by EOD" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
+                        <textarea id="purpose" rows="3" placeholder="e.g., Need final report for Q3 project by EOD" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
                     </div>
                      <div>
                         <label for="closing" class="block text-sm font-medium text-slate-700">Closing</label>
-                        <input type="text" id="closing" placeholder="e.g., Let me know if you have questions, Thanks for your help" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
+                        <input type="text" id="closing" placeholder="e.g., Let me know if you have questions" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500">
                     </div>
-
+                </div>
+                 <div class="space-y-6">
+                    <div>
+                         <label for="deconstruct" class="block text-sm font-medium text-slate-700">Or Paste an Existing Email to Improve</label>
+                         <textarea id="deconstruct" rows="8" placeholder="Paste your draft here and click 'Generate' to get improved versions based on the tone you select above." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
+                    </div>
                     <div class="flex items-center space-x-4">
                         <button id="generate-button" class="w-full inline-flex justify-center items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                             Generate Email
@@ -112,45 +112,53 @@
                             Clear
                         </button>
                     </div>
+                 </div>
+            </div>
 
-                    <div class="border-t border-slate-200 pt-6">
-                         <label for="deconstruct" class="block text-sm font-medium text-slate-700">Or Paste an Existing Email to Improve</label>
-                         <textarea id="deconstruct" rows="5" placeholder="Paste your draft here and click 'Generate' to get an improved version based on the tone you select above." class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"></textarea>
-                    </div>
+            <!-- Output Section -->
+            <div id="output-container" class="relative">
+                <div id="loader" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-10 rounded-lg">
+                    <div class="loader"></div>
                 </div>
-
-                <!-- Right Panel: Output -->
-                <div class="bg-slate-50 rounded-lg p-6 border border-slate-200 h-full flex flex-col">
-                    <div class="flex-grow relative">
-                        <textarea id="output" class="w-full h-full text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly placeholder="Your generated email will appear here..."></textarea>
-                         <div id="loader" class="hidden absolute inset-0 bg-slate-50 bg-opacity-80 flex items-center justify-center">
-                            <div class="loader"></div>
+                <div id="output-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Option 1 -->
+                    <div id="output-box-1" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
+                        <h3 class="font-semibold mb-2 text-slate-700">Option 1</h3>
+                        <textarea id="output-1" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
+                        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
+                            <button data-target="output-1" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
+                            <span class="copy-feedback ml-3 text-xs text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
                         </div>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-slate-200 flex items-center">
-                        <button id="copy-button" class="inline-flex items-center rounded-md border border-transparent bg-slate-200 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            Copy Text
-                        </button>
-                        <span id="copy-feedback" class="ml-4 text-sm text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
+                    <!-- Option 2 -->
+                    <div id="output-box-2" class="output-box bg-slate-50 rounded-lg p-4 border border-slate-200 flex-col hidden">
+                        <h3 class="font-semibold mb-2 text-slate-700">Option 2</h3>
+                        <textarea id="output-2" class="w-full h-48 text-sm bg-transparent border-0 resize-none focus:ring-0 p-0" readonly></textarea>
+                        <div class="mt-2 pt-2 border-t border-slate-200 flex items-center">
+                            <button data-target="output-2" class="copy-button inline-flex items-center rounded-md border border-transparent bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">Copy</button>
+                            <span class="copy-feedback ml-3 text-xs text-green-600 font-medium opacity-0 transition-opacity">Copied!</span>
+                        </div>
                     </div>
+                </div>
+                <div id="placeholder" class="text-center py-16 text-slate-500">
+                    Your generated email options will appear here...
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // --- DOM Elements ---
         const generateButton = document.getElementById('generate-button');
-        const outputArea = document.getElementById('output');
-        const copyButton = document.getElementById('copy-button');
         const clearButton = document.getElementById('clear-button');
-        const copyFeedback = document.getElementById('copy-feedback');
         const loader = document.getElementById('loader');
+        const placeholder = document.getElementById('placeholder');
+        const outputGrid = document.getElementById('output-grid');
 
-        // --- State ---
-        let currentEmail = '';
+        const outputBox1 = document.getElementById('output-box-1');
+        const outputBox2 = document.getElementById('output-box-2');
+        const output1 = document.getElementById('output-1');
+        const output2 = document.getElementById('output-2');
 
-        // --- Functions ---
         const getFormValues = () => ({
             tone: document.getElementById('tone').value,
             opening: document.getElementById('opening').value,
@@ -162,32 +170,33 @@
         const generatePrompt = () => {
             const { tone, opening, purpose, closing, deconstruct } = getFormValues();
 
+            let basePrompt;
             if (deconstruct.trim()) {
-                return `You are a helpful assistant for non-native English speakers. Review the following email draft and rewrite it to be more professional, clear, and fluent in English. Adapt the email to have a ${tone} tone. The user's draft is: "${deconstruct}"`;
+                basePrompt = `You are a helpful assistant for non-native English speakers. Review the following email draft and rewrite it to be more professional, clear, and fluent in English. Adapt the email to have a ${tone} tone. The user's draft is: "${deconstruct}"`;
+            } else {
+                 if (!purpose.trim()) return null; // Require purpose for new emails
+                basePrompt = `You are a helpful assistant for non-native English speakers. Write a professional email with a ${tone} tone. The main purpose of the email is: "${purpose}".`;
+                if (opening) basePrompt += ` The opening should convey: "${opening}".`;
+                if (closing) basePrompt += ` The closing should include the idea: "${closing}".`;
             }
-
-            let prompt = `You are a helpful assistant for non-native English speakers. Write a professional email with a ${tone} tone. `;
-            if (opening) prompt += `The opening should convey: "${opening}". `;
-            if (purpose) prompt += `The main purpose of the email is: "${purpose}". `;
-            if (closing) prompt += `The closing should include the idea: "${closing}". `;
-            prompt += `Keep the email concise and clear. Include a simple greeting (like "Hi Team," or "Dear [Name],") and a sign-off (like "Best regards,").`;
-
-            return prompt;
+            
+            return `${basePrompt} Please provide two distinct and complete email options in a valid JSON format like this: {"options": ["First email text...", "Second email text..."]}. Do not include any markdown or extra explanations outside of the JSON structure.`;
         };
 
         const callApi = async () => {
             const prompt = generatePrompt();
             if (!prompt) {
-                alert("Please fill in at least one field or paste a draft.");
+                alert("Please fill in the 'Purpose' field or paste a draft to improve.");
                 return;
             }
 
             loader.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            outputBox1.classList.add('hidden');
+            outputBox2.classList.add('hidden');
             generateButton.disabled = true;
-            outputArea.value = '';
 
             try {
-                // This URL points to our Netlify Function
                 const response = await fetch('/.netlify/functions/generateEmail', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -200,34 +209,48 @@
                 }
 
                 const data = await response.json();
-                currentEmail = data.text;
-                outputArea.value = currentEmail;
-                copyButton.disabled = false;
+                
+                if (data.options && data.options.length >= 2) {
+                    output1.value = data.options[0];
+                    output2.value = data.options[1];
+                    outputBox1.classList.remove('hidden');
+                    outputBox1.classList.add('flex');
+                    outputBox2.classList.remove('hidden');
+                    outputBox2.classList.add('flex');
+                } else {
+                    throw new Error("Received an invalid response format from the server.");
+                }
 
             } catch (error) {
                 console.error("API call failed:", error);
-                outputArea.value = `Error: Could not generate email. ${error.message}`;
+                placeholder.textContent = `Error: Could not generate email. ${error.message}`;
+                placeholder.classList.remove('hidden');
             } finally {
                 loader.classList.add('hidden');
                 generateButton.disabled = false;
             }
         };
 
-        const copyToClipboard = () => {
-            if (!currentEmail) return;
-            // Use the older document.execCommand for broader compatibility in iFrames
-            const textArea = document.createElement("textarea");
-            textArea.value = currentEmail;
-            document.body.appendChild(textArea);
-            textArea.select();
+        const copyToClipboard = (event) => {
+            const button = event.target;
+            const targetId = button.dataset.target;
+            const textArea = document.getElementById(targetId);
+            const feedbackSpan = button.nextElementSibling;
+            
+            if (!textArea.value) return;
+
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textArea.value;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
             try {
                 document.execCommand('copy');
-                copyFeedback.classList.remove('opacity-0');
-                setTimeout(() => copyFeedback.classList.add('opacity-0'), 2000);
+                feedbackSpan.classList.remove('opacity-0');
+                setTimeout(() => feedbackSpan.classList.add('opacity-0'), 2000);
             } catch (err) {
                 console.error('Fallback: Oops, unable to copy', err);
             }
-            document.body.removeChild(textArea);
+            document.body.removeChild(tempTextArea);
         };
 
         const clearAllFields = () => {
@@ -235,31 +258,27 @@
             document.getElementById('purpose').value = '';
             document.getElementById('closing').value = '';
             document.getElementById('deconstruct').value = '';
-            outputArea.value = '';
-            currentEmail = '';
-            copyButton.disabled = true;
+            output1.value = '';
+            output2.value = '';
+            outputBox1.classList.add('hidden');
+            outputBox2.classList.add('hidden');
+            placeholder.textContent = 'Your generated email options will appear here...';
+            placeholder.classList.remove('hidden');
         };
 
         // --- Event Listeners ---
         generateButton.addEventListener('click', callApi);
-        copyButton.addEventListener('click', copyToClipboard);
         clearButton.addEventListener('click', clearAllFields);
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', copyToClipboard);
+        });
 
-        // --- Initial State ---
-        copyButton.disabled = true;
-
-        // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
-                    });
+                navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed:', err));
             });
         }
     </script>
 </body>
 </html>
+
