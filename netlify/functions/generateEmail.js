@@ -30,7 +30,8 @@ exports.handler = async (event) => {
         };
     }
 
-    const API_URL = `https://generativelaanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+    // Corrected the typo in the URL here
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
 
     try {
         const { prompt } = JSON.parse(event.body);
