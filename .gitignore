@@ -1,1 +1,3 @@
 Ignore Node.js dependenciesnode_modulesIgnore environment files.env
+# Local Netlify folder
+.netlify
