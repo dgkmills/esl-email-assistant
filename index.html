@@ -24,14 +24,14 @@
             --primary-color: #0ea5e9;
         }
         html.dark {
-            --bg-color: #0f172a;
-            --card-bg-color: #1e293b;
-            --text-color: #e2e8f0;
-            --text-muted-color: #94a3b8;
-            --border-color: #334155;
-            --control-bg-color: #334155;
-            --output-bg-color: #1a2436;
-            --primary-color: #38bdf8;
+            --bg-color: #0f172a; /* slate-900 */
+            --card-bg-color: #1e293b; /* slate-800 */
+            --text-color: #e2e8f0; /* slate-200 */
+            --text-muted-color: #94a3b8; /* slate-400 */
+            --border-color: #475569; /* slate-600 - Increased contrast */
+            --control-bg-color: #334155; /* slate-700 */
+            --output-bg-color: #1a2436; /* custom darker slate */
+            --primary-color: #38bdf8; /* sky-400 */
         }
         body { 
             font-family: 'Inter', sans-serif; 
@@ -64,28 +64,35 @@
              background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
         }
 
-        /* Custom Toggle Switch */
-        .toggle-bg:after {
+        /* UPDATED: Custom Toggle Switch CSS - Removed unsupported @apply and using peer-checked for reactivity */
+        .toggle-switch:after {
             content: '';
-            @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 transition shadow-sm;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            height: 1.25rem; /* 20px */
+            width: 1.25rem; /* 20px */
+            border-radius: 9999px;
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out;
         }
-        input:checked + .toggle-bg:after {
-            transform: translateX(100%);
-            @apply border-white;
+        .peer:checked + .toggle-switch:after {
+            transform: translateX(0.9rem); /* Moves the toggle circle */
         }
-        input:checked + .toggle-bg {
-            @apply bg-sky-600;
-        }
-        .bilingual-button > span { display: block; }
-        .bilingual-header > * { display: block; }
+        
+        /* Bilingual text styling */
+        .bilingual-button > span { display: block; line-height: 1.2; }
+        .bilingual-header > * { display: block; line-height: 1.2; }
     </style>
 </head>
 <body class="antialiased">
 
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        <main class="max-w-7xl w-full mx-auto bg-white rounded-2xl shadow-lg p-4 md:p-8 border border-slate-200 main-card">
+        <main class="max-w-7xl w-full mx-auto rounded-2xl shadow-lg p-4 md:p-8 border main-card">
             
             <header class="flex justify-between items-center mb-6">
+                <!-- MODIFIED: Bilingual header is now static and won't be changed by the language toggle -->
                 <div class="text-left bilingual-header">
                     <h1 class="text-2xl md:text-3xl font-bold text-sky-600 dark:text-sky-400">ESL Email Assistant</h1>
                     <span class="font-thai text-xl text-sky-700 dark:text-sky-500">ผู้ช่วยเขียนอีเมลภาษาอังกฤษ</span>
@@ -96,8 +103,9 @@
                         <span class="text-sm font-medium text-muted">☀️</span>
                         <label for="theme-toggle" class="flex items-center cursor-pointer">
                             <div class="relative">
-                                <input type="checkbox" id="theme-toggle" class="sr-only">
-                                <div class="block bg-gray-600 w-11 h-6 rounded-full toggle-bg"></div>
+                                <!-- UPDATED: Refactored toggle to use peer-checked for compatibility and better styling -->
+                                <input type="checkbox" id="theme-toggle" class="sr-only peer">
+                                <div class="toggle-switch block w-10 h-6 rounded-full bg-slate-300 dark:bg-slate-700 peer-checked:bg-sky-500 transition"></div>
                             </div>
                         </label>
                         <span class="text-sm font-medium text-muted">🌙</span>
@@ -106,8 +114,9 @@
                         <span class="text-sm font-bold">EN</span>
                         <label for="lang-toggle" class="flex items-center cursor-pointer">
                             <div class="relative">
-                                <input type="checkbox" id="lang-toggle" class="sr-only">
-                                <div class="block bg-gray-600 w-11 h-6 rounded-full toggle-bg"></div>
+                                <!-- UPDATED: Refactored toggle to use peer-checked for compatibility and better styling -->
+                                <input type="checkbox" id="lang-toggle" class="sr-only peer">
+                                <div class="toggle-switch block w-10 h-6 rounded-full bg-slate-300 dark:bg-slate-700 peer-checked:bg-sky-500 transition"></div>
                             </div>
                         </label>
                         <span class="text-sm font-bold font-thai">ไทย</span>
@@ -119,18 +128,19 @@
             <div class="w-full space-y-4 mb-8">
                  <div>
                      <label for="deconstruct" class="block text-lg font-semibold mb-2" data-en="Start with your email draft" data-th="เริ่มต้นด้วยร่างอีเมลของคุณ"></label>
-                     <textarea id="deconstruct" rows="8" class="w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-base bg-[var(--control-bg-color)] border-[var(--border-color)] placeholder:text-muted" data-en-placeholder="Write your main ideas or paste a full draft here..." data-th-placeholder="เขียนแนวคิดหลักของคุณหรือวางร่างฉบับเต็มที่นี่..."></textarea>
+                     <textarea id="deconstruct" rows="8" class="w-full rounded-md shadow-sm focus:border-sky-500 focus:ring-sky-500 text-base bg-[var(--control-bg-color)] border-[var(--border-color)] placeholder:text-muted transition-all duration-200" data-en-placeholder="Write your main ideas or paste a full draft here..." data-th-placeholder="เขียนแนวคิดหลักของคุณหรือวางร่างฉบับเต็มที่นี่..."></textarea>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                      <div>
                         <label for="sender-name" class="block text-sm font-medium text-muted" data-en="Your Name (for signature)" data-th="ชื่อของคุณ (สำหรับลายเซ็น)"></label>
-                        <input type="text" id="sender-name" class="mt-1 w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]">
+                        <input type="text" id="sender-name" class="mt-1 w-full rounded-md shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]">
                     </div>
                     <div>
                         <label for="recipient-name" class="block text-sm font-medium text-muted" data-en="Recipient Name (e.g., Mr. Smith)" data-th="ชื่อผู้รับ (เช่น คุณสมชาย)"></label>
-                        <input type="text" id="recipient-name" class="mt-1 w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]">
+                        <input type="text" id="recipient-name" class="mt-1 w-full rounded-md shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]">
                     </div>
-                    <button id="generate-button" class="w-full inline-flex justify-center items-center rounded-md border border-transparent bg-sky-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 self-end bilingual-button">
+                    <!-- MODIFIED: Bilingual button is now static -->
+                    <button id="generate-button" class="w-full inline-flex justify-center items-center rounded-md border border-transparent bg-sky-600 px-6 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 self-end bilingual-button disabled:opacity-50" disabled>
                         <span class="font-semibold">Generate & Improve</span>
                         <span class="font-thai text-sm">สร้างและปรับปรุง</span>
                     </button>
@@ -139,10 +149,12 @@
 
             <!-- Output Section -->
             <div id="output-container" class="relative">
-                <div id="loader" class="hidden absolute inset-0 bg-opacity-80 flex items-center justify-center z-10 rounded-lg">
-                    <div class="flex flex-col items-center">
+                <div id="loader" class="hidden absolute inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center z-10 rounded-lg">
+                    <div class="flex flex-col items-center bg-[var(--card-bg-color)] p-6 rounded-lg shadow-xl">
                         <div class="loader"></div>
-                        <p class="mt-4 text-muted font-medium" data-en="Generating options..." data-th="กำลังสร้างตัวเลือก..."></p>
+                        <p class="mt-4 text-muted font-medium bilingual-button">
+                            <span data-en="Generating options..." data-th="กำลังสร้างตัวเลือก..."></span>
+                        </p>
                     </div>
                 </div>
 
@@ -150,7 +162,7 @@
                 <div id="subject-section" class="hidden mb-6">
                     <h3 class="text-lg font-semibold mb-2" data-en="Subject Line" data-th="หัวข้อเรื่อง"></h3>
                     <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-[var(--border-color)]">
-                        <select id="subject-select" data-key="subject_lines" class="option-control w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
+                        <select id="subject-select" data-key="subject_lines" class="option-control w-full rounded-md shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
                         <button id="copy-subject-button" data-target="subject-select" class="copy-button inline-flex items-center rounded-md bg-slate-200 dark:bg-slate-600 dark:text-slate-100 px-4 py-2 text-xs font-medium hover:bg-slate-300 dark:hover:bg-slate-500">
                             <span data-en="Copy" data-th="คัดลอก"></span>
                             <span class="copy-feedback ml-2 text-green-600 dark:text-green-400 font-medium opacity-0 transition-opacity">Copied!</span>
@@ -193,20 +205,20 @@
             const sender = document.getElementById('sender-name').value.trim() || '[Your Name]';
             const recipient = document.getElementById('recipient-name').value.trim();
             
-            return `You are an expert ESL assistant for Thai professionals. Analyze the user's draft. Create a comprehensive JSON object containing two distinct email options: one formal, one more standard/friendly.
-            IMPORTANT: For EACH part, you must provide both "en_text" and "th_text" fields, and "en_explanation" and "th_explanation" fields.
-
-            For EACH of the two options, provide arrays of 3 unique options for each of these keys: 'subject_lines', 'greetings', 'opening_lines', 'main_bodies', 'closing_lines', 'sign_offs'.
-            Each item in the array must be an object with four keys: "en_text", "th_text", "en_explanation", "th_explanation".
-            For greetings, use the placeholder "${recipient || '[Recipient Name]'}". For sign-offs, include the placeholder "${sender}".
-
-            The final JSON structure MUST be: {"option1":{...}, "option2":{...}}. Do not include any text outside the JSON object.
-            User's draft: "${userInput}"`;
+            // UPDATED: More direct and concise prompt for faster processing and better reliability.
+            return `Analyze the user's draft. Generate a JSON object with two main keys: "option1" (formal) and "option2" (standard/friendly).
+Each option key must contain arrays of 3 unique choices for the following keys: 'subject_lines', 'greetings', 'opening_lines', 'main_bodies', 'closing_lines', 'sign_offs'.
+Each choice in these arrays must be an object with four properties: "en_text", "th_text", "en_explanation", and "th_explanation".
+Use placeholder "${recipient || '[Recipient Name]'}" in greetings and "${sender}" in sign-offs.
+User's draft: "${userInput}"`;
         };
         
         const callApi = async () => {
+            deconstructInput.classList.remove('ring-2', 'ring-red-500'); // Reset validation style
             if (!deconstructInput.value.trim()) {
-                alert(state.language === 'en' ? "Please provide your email ideas in the text box to begin." : "กรุณาใส่แนวคิดอีเมลของคุณในกล่องข้อความเพื่อเริ่มต้น");
+                // UPDATED: Replaced alert() with a non-blocking visual cue.
+                deconstructInput.classList.add('ring-2', 'ring-red-500');
+                deconstructInput.focus();
                 return;
             }
             loader.classList.remove('hidden');
@@ -223,8 +235,8 @@
                     body: JSON.stringify({ prompt })
                 });
                 if (!response.ok) {
-                     const errorText = await response.text();
-                    throw new Error(`API error! status: ${response.status} - ${errorText}`);
+                     const errorData = await response.json();
+                    throw new Error(`API error! status: ${response.status} - ${errorData.error || 'Unknown error'}`);
                 }
                 
                 const data = await response.json();
@@ -234,7 +246,7 @@
             } catch (error) {
                 console.error("API call failed:", error);
                 const errorMsg = state.language === 'en' ? `Error: Could not generate email. ${error.message}` : `เกิดข้อผิดพลาด: ไม่สามารถสร้างอีเมลได้ ${error.message}`;
-                placeholder.textContent = errorMsg;
+                placeholder.innerText = errorMsg;
                 placeholder.classList.remove('hidden');
             } finally {
                 loader.classList.add('hidden');
@@ -259,8 +271,8 @@
         };
 
         const createOptionBoxHTML = (num, titleEn, titleTh) => {
-            const textLang = state.language;
-            const explanationLang = textLang === 'en' ? 'th' : 'en';
+            // Determine explanation language based on UI language. This provides assistance in the other language.
+            const explanationLang = state.language === 'en' ? 'th' : 'en';
 
             return `
             <div id="output-box-${num}" class="output-box bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-[var(--border-color)] flex flex-col">
@@ -272,7 +284,7 @@
                     ${createSelectHTML(num, 'closing_line', 'Closing', 'ประโยคลงท้าย')}
                     ${createSelectHTML(num, 'sign_off', 'Sign-off', 'คำลงท้าย')}
                 </div>
-                <textarea id="output-${num}" class="w-full h-48 text-base bg-[var(--output-bg-color)] border border-[var(--border-color)] rounded-md resize-none focus:ring-1 focus:ring-sky-500 p-2 ${explanationLang === 'en' ? 'font-thai': ''}" readonly></textarea>
+                <textarea id="output-${num}" class="w-full h-48 text-base bg-[var(--output-bg-color)] border border-[var(--border-color)] rounded-md resize-none focus:ring-1 focus:ring-sky-500 p-2" readonly></textarea>
                 <div class="mt-2 pt-2 border-t border-[var(--border-color)]">
                     <p class="text-sm text-sky-700 dark:text-sky-400 min-h-[4rem] p-1 ${explanationLang === 'th' ? 'font-thai' : ''}" id="explanation-box-${num}"></p>
                 </div>
@@ -288,11 +300,11 @@
         const createSelectHTML = (num, key, labelEn, labelTh) => `
             <div>
                 <label for="${key}-${num}" class="text-sm font-medium text-muted" data-en="${labelEn}" data-th="${labelTh}"></label>
-                <select id="${key}-${num}" data-option-num="${num}" data-key="${getApiKeyName(key)}" class="option-control mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
+                <select id="${key}-${num}" data-option-num="${num}" data-key="${getApiKeyName(key)}" class="option-control mt-1 block w-full rounded-md shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm bg-[var(--control-bg-color)] border-[var(--border-color)]"></select>
             </div>`;
         
         const getApiKeyName = (key) => {
-             const pluralMap = { 'main_body': 'main_bodies' };
+             const pluralMap = { 'greeting': 'greetings', 'opening_line': 'opening_lines', 'main_body': 'main_bodies', 'closing_line': 'closing_lines', 'sign_off': 'sign_offs' };
              return pluralMap[key] || `${key}s`;
         };
 
@@ -323,8 +335,9 @@
         const updateEmailText = (optionNum) => {
             const outputTextarea = document.getElementById(`output-${optionNum}`);
             if(!outputTextarea) return;
-            const parts = ['greetings', 'opening_lines', 'main_bodies', 'closing_lines', 'sign_offs'].map(key => {
-                const select = document.querySelector(`#output-box-${optionNum} [data-key="${key}"]`);
+            const keysToCombine = ['greeting', 'opening_line', 'main_body', 'closing_line', 'sign_off'];
+            const parts = keysToCombine.map(key => {
+                const select = document.querySelector(`#output-box-${optionNum} [data-key="${getApiKeyName(key)}"]`);
                 return select ? select.value : '';
             });
             outputTextarea.value = parts.join('\n\n');
@@ -350,7 +363,10 @@
 
             if (isSubject) {
                 const allSubjects = [...(state.apiData.option1.subject_lines || []), ...(state.apiData.option2.subject_lines || [])];
-                document.getElementById('subject-explanation').textContent = getExplanationForItem(allSubjects, select.value);
+                const explanation = getExplanationForItem(allSubjects, select.value);
+                const explanationEl = document.getElementById('subject-explanation');
+                explanationEl.textContent = explanation;
+                explanationEl.className = `text-sm text-sky-700 dark:text-sky-400 mt-1 pl-1 ${state.language === 'en' ? 'font-thai' : ''}`;
             } else {
                 updateEmailText(optionNum);
                 const dataArray = state.apiData[`option${optionNum}`]?.[key];
@@ -419,6 +435,15 @@
             themeToggle.addEventListener('change', toggleTheme);
             langToggle.addEventListener('change', toggleLanguage);
             
+            deconstructInput.addEventListener('input', () => {
+                if (deconstructInput.value.trim()) {
+                    generateButton.disabled = false;
+                    deconstructInput.classList.remove('ring-2', 'ring-red-500');
+                } else {
+                    generateButton.disabled = true;
+                }
+            });
+
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
@@ -429,4 +454,5 @@
     </script>
 </body>
 </html>
+
 
